@@ -1,0 +1,78 @@
+@model IEnumerable<ShopInternet.Models.Product>
+
+<form method="post">
+        <br />
+    <div class="backgroundWhiteBorder">
+        <div class="container row justify-content-center">
+            <div class="col-10 col-md-8">
+                <div class="card mt-4">
+                    <div class="card-header bg-primary text-light ml-0 row container">
+                        <div class="col-6">
+                            <i class="fa fa-shopping-cart"></i> &nbsp;
+                            Кошик
+                        </div>
+                        <div class="col-6 text-end">
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-warning btn-sm">Продовжити покупки</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.Count() > 0)
+                        {
+                            foreach (var obj in Model)
+                            {
+                                <div class="row">
+                                    <div class="d-none d-lg-block col-lg-2 text-center py-2">
+                                        @if (!string.IsNullOrEmpty(obj.Image))
+                                        {
+                                            <img src="@(WC.ImagePath + obj.Image)" class="rounded" width="100%" />
+                                        }
+                                        else
+                                        {
+                                            <img src="https://placehold.co/400x400/png?text=Немає+фото" class="rounded" width="100%" />
+                                        }
+                                    </div>
+                                    <div class="col-12 text-sm-center col-lg-5 text-lg-start">
+                                        <h5><strong>@obj.Name</strong></h5>
+                                        <div style="font-size:11px;">@Html.Raw(obj.Description)</div>
+                                    </div>
+                                    <div class="col-12 text-sm-center col-lg-2 text-lg-start py-2">
+                                        <span style="font-size:17px;">@obj.Price.ToString("c")</span>
+                                    </div>
+                                    <div class="col-12 col-sm-4 col-lg-2 pt-2 text-center">
+                                        <div class="input-group">
+                                            <a asp-action="Minus" asp-route-id = "@obj.Id" class="btn btn-warning">-</a>
+                                            <input type="text" class="form-control text-center" value="@obj.TempCount" readonly />
+                                            <a asp-action="Plus" asp-route-id = "@obj.Id" class="btn btn-primary">+</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-lg-1 pt-2 text-center">
+                                        <a asp-action="Remove" asp-route-id="@obj.Id" class="btn btn-outline-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <hr />
+                            }
+                        }
+                        else
+                        {
+                            <p>Будь ласка, додайте товари до кошика.</p>
+                        }
+                    </div>
+                    @if (Model.Count() > 0)
+                    {
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-6 col-md-3 offset-md-9">
+                                    <button type="submit" class="btn btn-success form-control">
+                                        <span>Оформити замовлення</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

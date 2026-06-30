@@ -1,0 +1,88 @@
+@model IEnumerable<ShopInternet.Models.Product>
+
+@{
+    ViewData["Title"] = "Список товарів";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-primary">Список товарів</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> &nbsp; Додати новий товар
+            </a>
+        </div>
+    </div>
+
+    <br /><br />
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped" style="width:100%">
+            <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Image)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category)
+                </th>
+                <th class="text-center">Дії</th>
+            </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="width: 10%; min-width: 100px;">
+                            @if (!string.IsNullOrEmpty(item.Image))
+                            {
+                                <img src = "@(WC.ImagePath + item.Image)" width="100%" style="border-radius:5px; border:1px solid #bbb" alt="No Image :(" />
+                            }
+                            else
+                            {
+                                <img src="https://placehold.co/400x400/png?text=Немає+фото" width="100%" style="border-radius:5px; border:1px solid #bbb" alt="No Image :(" />
+                            }
+                        </td>
+                        <td width="20%">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td width="30%">
+                            @Html.DisplayFor(modelItem => item.Description)
+                        </td>
+                        <td width="15%">
+                            @item.Price.ToString("C")
+                        </td>
+                        <td width="15%">
+                            @Html.DisplayFor(modelItem => item.Category!.Name)
+                        </td>
+                        <td class="text-center" style="min-width: 150px;">
+                            <div class="w-75 btn-group" role="group">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary mx-2">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info mx-2">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger mx-2">
+                                    <i class="bi bi-trash-fill"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

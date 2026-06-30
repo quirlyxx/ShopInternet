@@ -1,0 +1,44 @@
+@model ShopInternet.Models.Category
+
+@{
+    ViewData["Title"] = "Редагувати категорію";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+    <div class="border p-3 mt-4">
+        <div class="row pb-2">
+            <h2 class="text-primary">Редагувати категорію</h2>
+            <hr />
+        </div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Order" class="form-label"></label>
+            <input asp-for="Order" class="form-control" />
+            <span asp-validation-for="Order" class="text-danger"></span>
+        </div>
+        <div class="row">
+            <div class="col-6 col-md-3">
+                <button type="submit" class="btn btn-primary form-control">Зберегти</button>
+            </div>
+            <div class="col-6 col-md-3">
+                <a asp-action="Index" class="btn btn-secondary border form-control">
+                    Назад до списку
+                </a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+

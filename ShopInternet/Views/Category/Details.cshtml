@@ -1,0 +1,31 @@
+@model ShopInternet.Models.Category
+
+@{
+    ViewData["Title"] = "Деталі категорії";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="border p-3 mt-4">
+    <div class="row pb-2">
+        <h2 class="text-primary">Деталі категорії</h2>
+        <hr />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" disabled class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Order" class="form-label"></label>
+        <input asp-for="Order" disabled class="form-control" />
+    </div>
+    <div class="row">
+        <div class="col-6 col-md-3">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary form-control">Редагувати</a>
+        </div>
+        <div class="col-6 col-md-3">
+            <a asp-action="Index" class="btn btn-secondary border form-control">
+                Назад до списку
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+﻿@{
+    ViewData["Title"] = "Інтернет магазин";
+}
+
+<div class="container">
+    <div class="text-center mb-4">
+        <form method="get" asp-action="Index" class="d-inline-block">
+            <select name="categoryId" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
+                <option value="">Усі категорії</option>
+                @foreach (var obj in Model.Categories)
+                {
+                    <option value="@obj.Id" selected="@(ViewBag.SelectedCategoryId == obj.Id)">@obj.Name</option>
+                }
+            </select>
+        </form>
+    </div>
+    <br />
+    <div class="row">
+        @foreach (var prod in Model.Products)
+        {
+            <div class="col-lg-4 col-md-6 pb-4">
+                <div class="card bg-white rounded shadow-sm h-100" style="border:1px solid #222">
+                    <div class="card-body pb-1 px-3 row" style="min-height: 80px;">
+                        <div class="col-8 h5">@prod.Name</div>
+                        <div class="col-4 text-end"><span class="text-info h4" style="white-space: nowrap;">@prod.Price.ToString("C")</span></div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(prod.Image))
+                    {
+                        <img class="card-img-top img-fluid d-block mx-auto mb-3" src="@(WC.ImagePath + prod.Image)" alt="Card image cap" style="height: 250px; object-fit: contain;">
+                    }
+                    else
+                    {
+                        <img class="card-img-top img-fluid d-block mx-auto mb-3" src="https://placehold.co/400x400/png?text=Немає+фото" alt="Card image cap" style="height: 250px; object-fit: contain;">
+                    }
+                    <div class="card-body p-1 px-3 row d-flex flex-column">
+                        <div class="col-12 pt-2" style="font-size:13px; text-align:justify; flex-grow: 1;">
+                            <p>@prod.Description</p>
+                            @if (!string.IsNullOrEmpty(prod.DescriptionFile))
+                            {
+                                <a href="@(WC.PdfPath + prod.DescriptionFile)" target="_blank" class="d-inline-flex align-items-center">
+                                    📄 Опис товару (PDF)
+                                </a>
+                            }
+                        </div>
+                        <div class="col-12 p-1 mt-auto">
+                            <a asp-controller="Product" asp-action="Details" asp-route-id="@prod.Id" class="btn btn-success form-control btn-sm p-2" style="height:40px">Переглянути деталі</a>
+                        </div>
+                        <div class="col-12 p-1">
+                            <form method="post" asp-action="Details" asp-route-id="@prod.Id">
+                                <button type="submit" class="btn btn-primary form-control btn-sm p-2" style="height:40px">Додати в кошик</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

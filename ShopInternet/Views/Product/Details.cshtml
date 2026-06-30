@@ -1,0 +1,58 @@
+@model ShopInternet.Models.Product
+
+@{
+    ViewData["Title"] = "Деталі товару";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card shadow border-0 mt-4">
+    <div class="card-header bg-primary bg-gradient text-light py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3 class="text-white py-2">Деталі товару</h3>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <div class="row">
+            <div class="col-12 col-lg-4 text-center mb-3">
+                @if (!string.IsNullOrEmpty(Model.Image))
+                {
+                    <img src="@(WC.ImagePath + Model.Image)" class="img-fluid rounded shadow" style="width: 60%; object-fit: cover;" alt="@Model.Name" />
+                }
+                else
+                {
+                    <img src="https://placehold.co/400x400/png?text=Немає+фото" class="img-fluid rounded shadow" style="width: 60%;" alt="Немає фото" />
+                }
+            </div>
+            <div class="col-12 col-lg-8">
+                <div class="row ps-2">
+                    <div class="col-12 border-bottom pb-3">
+                        <h4 class="text-primary fw-bold">@Model.Name</h4>
+                    </div>
+                    <div class="col-12 pt-3">
+                        <p class="text-dark"><strong>Опис: </strong>@Html.Raw(Model.Description)</p>
+                    </div>
+                    <div class="col-12">
+                        <p class="text-dark"><strong>Ціна: </strong>@Model.Price.ToString("c")</p>
+                    </div>
+                    <div class="col-12">
+                        <p class="text-dark"><strong>Категорія: </strong>@(Model.Category?.Name ?? "Без категорії")</p>
+                    </div>
+                </div>
+                <div class="row pt-3">
+                    <div class="col-6 col-md-4">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary form-control">
+                            <i class="bi bi-pencil-square"></i> Редагувати
+                        </a>
+                    </div>
+                    <div class="col-6 col-md-4">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-info btn-outline-secondary border form-control">
+                            На головну сторінку
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
