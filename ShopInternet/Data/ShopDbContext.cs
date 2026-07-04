@@ -14,4 +14,5 @@ public class ShopDbContext : DbContext
     public DbSet<Product> Product { get; set; }
     public DbSet<OrderHeader> OrderHeader { get; set; }
     public DbSet<OrderDetails> OrderDetails { get; set; }
+    public DbSet<User> User { get; set; }
 }

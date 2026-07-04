@@ -1,0 +1,73 @@
+@model IEnumerable<ShopInternet.Models.User>
+
+@{
+    ViewData["Title"] = "Користувачі";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid p-3">
+    <div class="row pt-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h2 class="text-primary">Список користувачів</h2>
+            <a asp-action="CreateUser" class="btn btn-primary">Додати користувача</a>
+        </div>
+    </div>
+
+    <br />
+
+    @if (!Model.Any())
+    {
+        <p>Користувачів ще немає.</p>
+    }
+    else
+    {
+        <table class="table table-hover table-bordered table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>ПІБ</th>
+                    <th>Email</th>
+                    <th>Телефон</th>
+                    <th>Дата реєстрації</th>
+                    <th>Статус</th>
+                    <th class="text-center">Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr class="@(user.IsBlocked ? "table-danger" : "")">
+                        <td>@user.Id</td>
+                        <td>@user.FullName</td>
+                        <td>@user.Email</td>
+                        <td>@user.PhoneNumber</td>
+                        <td>@user.RegisteredDate.ToString("dd.MM.yyyy")</td>
+                        <td>
+                            @if (user.IsBlocked)
+                            {
+                                <span class="badge bg-danger">Блокований</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Активний</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            <form method="post" asp-action="ToggleBlock">
+                                <input type="hidden" name="id" value="@user.Id" />
+                                @if (user.IsBlocked)
+                                {
+                                    <button type="submit" class="btn btn-success btn-sm">Розблокувати</button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-danger btn-sm">Блокувати</button>
+                                }
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
