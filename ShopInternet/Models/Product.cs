@@ -28,9 +28,6 @@ public class Product
     [DisplayName("Зображення товару")]
     public string? Image { get; set; }
     
-    [DisplayName("Файл опису товару (PDF)")]
-    public string? DescriptionFile { get; set; }
-    
     [Required(ErrorMessage = "Оберіть категорію")]
     [DisplayName("Категорія товару")]
     public int CategoryId { get; set; }

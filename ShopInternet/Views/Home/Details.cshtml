@@ -34,14 +34,6 @@
                             </div>
                             <div class="col-12 pt-3">
                                 <p class="text-dark"><strong>Опис: </strong>@Html.Raw(Model.Product.Description)</p>
-                                @if (!string.IsNullOrEmpty(Model.Product.DescriptionFile))
-                                {
-                                    <p>
-                                        <a href="@(WC.PdfPath + Model.Product.DescriptionFile)" target="_blank" class="btn btn-outline-danger btn-sm">
-                                            📄 Завантажити опис товару (PDF)
-                                        </a>
-                                    </p>
-                                }
                             </div>
                             <div class="col-12">
                                 <p class="text-dark"><strong>Ціна: </strong>@Model.Product.Price.ToString("c")</p>

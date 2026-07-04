@@ -32,18 +32,7 @@
             </div>
             <div class="mb-3">
                 <label asp-for="Image" class="form-label"></label>
-                <input type="file" name="imageFile" class="form-control" accept="image/*" />
-            </div>
-            <div class="mb-3">
-                <label asp-for="DescriptionFile" class="form-label"></label>
-                <input type="file" name="pdfFile" class="form-control" accept="application/pdf" />
-                @if (!string.IsNullOrEmpty(Model.DescriptionFile))
-                {
-                    <div class="form-text">
-                        Поточний файл:
-                        <a href="@(ShopInternet.WC.PdfPath + Model.DescriptionFile)" target="_blank">переглянути PDF</a>
-                    </div>
-                }
+                <input type="file" name="files" class="form-control" accept="image/*" />
             </div>
             <div class="mb-3">
                 <label asp-for="CategoryId" class="form-label"></label>

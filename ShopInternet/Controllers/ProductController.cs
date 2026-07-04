@@ -11,13 +11,11 @@ namespace ShopInternet.Controllers
     {
         private readonly ShopDbContext _context;
         private readonly IUploader _uploader;
-        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductController(ShopDbContext context, IUploader uploader, IWebHostEnvironment webHostEnvironment)
+        public ProductController(ShopDbContext context, IUploader uploader)
         {
             _context = context;
             _uploader = uploader;
-            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Product
@@ -25,33 +23,6 @@ namespace ShopInternet.Controllers
         {
             var shopDbContext = _context.Product.Include(p => p.Category);
             return View(await shopDbContext.ToListAsync());
-        }
-
-        // Простий метод збереження PDF-файлу опису товару (без IUploader, своя реалізація)
-        private async Task<string> SaveDescriptionPdfAsync(IFormFile pdfFile)
-        {
-            string folder = Path.Combine(_webHostEnvironment.WebRootPath, "files", "products");
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
-
-            string newFileName = Guid.NewGuid() + ".pdf";
-            string fullPath = Path.Combine(folder, newFileName);
-
-            await using var stream = new FileStream(fullPath, FileMode.Create);
-            await pdfFile.CopyToAsync(stream);
-
-            return newFileName;
-        }
-
-        private void DeleteDescriptionPdf(string fileName)
-        {
-            string fullPath = Path.Combine(_webHostEnvironment.WebRootPath, "files", "products", fileName);
-            if (System.IO.File.Exists(fullPath))
-            {
-                System.IO.File.Delete(fullPath);
-            }
         }
 
         // GET: Product/Details/5
@@ -85,20 +56,14 @@ namespace ShopInternet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,Image,DescriptionFile,CategoryId")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description,Price,Image,CategoryId")] Product product)
         {
             if (ModelState.IsValid)
             {
-                var imageFile = Request.Form.Files["imageFile"];
-                if (imageFile != null)
+                var files = Request.Form.Files;
+                if (files.Count > 0)
                 {
-                    product.Image = await _uploader.UploadFile(imageFile, WC.ImagePath);
-                }
-
-                var pdfFile = Request.Form.Files["pdfFile"];
-                if (pdfFile != null && pdfFile.Length > 0)
-                {
-                    product.DescriptionFile = await SaveDescriptionPdfAsync(pdfFile);
+                    product.Image = await _uploader.UploadFile(files[0], WC.ImagePath);
                 }
 
                 _context.Add(product);
@@ -131,7 +96,7 @@ namespace ShopInternet.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Image,DescriptionFile,CategoryId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,Price,Image,CategoryId")] Product product)
         {
             if (id != product.Id)
             {
@@ -147,33 +112,19 @@ namespace ShopInternet.Controllers
                     {
                         return NotFound();
                     }
-
-                    var imageFile = Request.Form.Files["imageFile"];
-                    if (imageFile != null)
+                    var files = Request.Form.Files;
+                    if (files.Count > 0)
                     {
                         if (!string.IsNullOrEmpty(productDb.Image))
                         {
                             _uploader.DeleteFile(WC.ImagePath, productDb.Image);
                         }
-                        product.Image = await _uploader.UploadFile(imageFile, WC.ImagePath);
+                        product.Image = await _uploader.UploadFile(files[0], WC.ImagePath);
+                        
                     }
                     else
                     {
                         product.Image = productDb.Image;
-                    }
-
-                    var pdfFile = Request.Form.Files["pdfFile"];
-                    if (pdfFile != null && pdfFile.Length > 0)
-                    {
-                        if (!string.IsNullOrEmpty(productDb.DescriptionFile))
-                        {
-                            DeleteDescriptionPdf(productDb.DescriptionFile);
-                        }
-                        product.DescriptionFile = await SaveDescriptionPdfAsync(pdfFile);
-                    }
-                    else
-                    {
-                        product.DescriptionFile = productDb.DescriptionFile;
                     }
 
                     _context.Update(product);
@@ -227,10 +178,6 @@ namespace ShopInternet.Controllers
                 if (!string.IsNullOrEmpty(product.Image))
                 {
                     _uploader.DeleteFile(WC.ImagePath, product.Image);
-                }
-                if (!string.IsNullOrEmpty(product.DescriptionFile))
-                {
-                    DeleteDescriptionPdf(product.DescriptionFile);
                 }
             }
 

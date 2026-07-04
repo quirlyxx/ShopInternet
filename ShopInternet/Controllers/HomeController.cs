@@ -19,20 +19,13 @@ public class HomeController : Controller
         _db = db;
     }
 
-    public async Task<IActionResult> Index(int? categoryId)
+    public async Task<IActionResult> Index()
     {
-        var query = _db.Product.Include(p => p.Category).AsQueryable();
-        if (categoryId.HasValue)
-        {
-            query = query.Where(p => p.CategoryId == categoryId.Value);
-        }
-
         ProductCategoryVM modelVM = new ProductCategoryVM()
         {
-            Products = await query.ToListAsync(),
-            Categories = await _db.Category.OrderBy(c => c.Order).ToListAsync()
+            Products = await _db.Product.Include(c => c.Category).ToListAsync(),
+            Categories = await _db.Category.ToListAsync()
         };
-        ViewBag.SelectedCategoryId = categoryId;
         return View(modelVM);
     }
 
