@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using ShopInternet.Models;
 
 namespace ShopInternet.Controllers
 {
+    [Authorize(Policy = "ManagerAccess")]
     public class ProductController : Controller
     {
         private readonly ShopDbContext _context;

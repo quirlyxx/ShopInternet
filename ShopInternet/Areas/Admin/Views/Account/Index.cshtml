@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Мій API ключ";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">API KEY</h5>
+        @if (ViewBag.ApiKey != null)
+        {
+            <div class="aler alert-info">
+                <strong>@ViewBag.ApiKey</strong>
+            </div>
+        }
+        else
+        {
+            <p class="text-warning">На жаль у вас немає API ключа</p>
+        }
+        <br/>
+        <a asp-action="GenerateApiKey" class="btn btn-primary">Згенерувати новий ключ</a>
+    </div>
+</div>
