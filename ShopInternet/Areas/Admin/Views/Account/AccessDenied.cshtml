@@ -1,9 +1,10 @@
 @{
     ViewData["Title"] = "Доступ заборонено";
 }
+<h2>Доступ заборонено</h2>
 
-<div class="text-center mt-5">
-    <h2 class="text-danger">Доступ заборонено</h2>
-    <p>У вас немає прав для перегляду цієї сторінки.</p>
-    <a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-primary">На головну</a>
+<div class="alert alert-danger mt-3">
+    У вас немає прав для перегляду цієї сторінки.
 </div>
+
+<a asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-primary">На головну</a>

@@ -58,5 +58,6 @@ public class AdminController : Controller
         await _db.SaveChangesAsync();
 
         return RedirectToAction(nameof(Users));
+        
     }
 }
