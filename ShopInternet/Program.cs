@@ -48,7 +48,6 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("PremiumAccess", policy => policy.RequireRole(WC.AdminRole, WC.ManagerRole, WC.PremiumUser));
     options.AddPolicy("AdminAccess", policy => policy.RequireRole(WC.AdminRole));
     options.AddPolicy("RegisterUserAccess", policy => policy.RequireRole(WC.AdminRole, WC.ManagerRole, WC.PremiumUser, WC.CustomerRole));
-    options.AddPolicy("ManagerAccess", policy => policy.RequireRole(WC.AdminRole, WC.ManagerRole));
 });
 #endregion
 
@@ -79,14 +78,46 @@ using (var scope = app.Services.CreateScope())
 }
 #endregion
 
+#region Seed Admin
 
-    // Configure the HTTP request pipeline.
-    if (!app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+    const string adminEmail = "admin@shop.com";
+    const string adminPassword = "Admin123";
+
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
     {
-        app.UseExceptionHandler("/Home/Error");
-        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-        app.UseHsts();
+        adminUser = new IdentityUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+
+        var result = await userManager.CreateAsync(adminUser, adminPassword);
+        if (result.Succeeded)
+        {
+            await userManager.AddToRoleAsync(adminUser, WC.AdminRole);
+        }
     }
+    else if (!await userManager.IsInRoleAsync(adminUser, WC.AdminRole))
+    {
+        await userManager.AddToRoleAsync(adminUser, WC.AdminRole);
+    }
+}
+#endregion
+
+
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -110,7 +141,7 @@ var isAdminEnable = builder.Configuration.GetValue<bool>("Features:EnableAdmin")
 if (isAdminEnable)
 {
     app.MapControllerRoute(
-        name:"areas",
+        name: "areas",
         pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 }
 #endregion

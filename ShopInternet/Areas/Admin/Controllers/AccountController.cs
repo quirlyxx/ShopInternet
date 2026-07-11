@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ShopInternet.Areas.Admin.Models.VM;
+using ShopInternet;
 
 namespace ShopInternet.Areas.Admin.Controllers
 {
@@ -23,7 +24,7 @@ namespace ShopInternet.Areas.Admin.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            if(user == null) return Challenge();
+            if (user == null) return Challenge();
             var apiKeyClaim = (await _userManager.GetClaimsAsync(user)).FirstOrDefault(c => c.Type == "ApiKey");
             ViewBag.ApiKey = apiKeyClaim?.Value;
             return View();
@@ -33,7 +34,7 @@ namespace ShopInternet.Areas.Admin.Controllers
         public async Task<IActionResult> GenerateApiKey()
         {
             var user = await _userManager.GetUserAsync(User);
-            if(user == null) return Challenge();
+            if (user == null) return Challenge();
             var claims = await _userManager.GetClaimsAsync(user);
             var apiKey = claims.FirstOrDefault(c => c.Type == "ApiKey");
             if (apiKey != null)
@@ -68,9 +69,11 @@ namespace ShopInternet.Areas.Admin.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "Користувач");
+                    // TODO: тимчасово для тестування - видати роль адміністратора при реєстрації.
+                    // Перед продом обов'язково повернути "Користувач" (WC.CustomerRole)!
+                    await _userManager.AddToRoleAsync(user, WC.AdminRole);
                     await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home", new { area =""});
+                    return RedirectToAction("Index", "Home", new { area = "" });
                 }
                 foreach (var error in result.Errors)
                 {
@@ -103,13 +106,6 @@ namespace ShopInternet.Areas.Admin.Controllers
                 ModelState.AddModelError(string.Empty, "Невірний логін чи пароль");
             }
             return View(model);
-        }
-
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult AccessDenied()
-        {
-            return View();
         }
 
         [HttpPost]

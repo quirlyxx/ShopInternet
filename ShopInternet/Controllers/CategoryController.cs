@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShopInternet.Data;
@@ -6,7 +5,6 @@ using ShopInternet.Models;
 
 namespace ShopInternet.Controllers;
 
-[Authorize(Policy = "ManagerAccess")]
 public class CategoryController : Controller
 {
     private readonly ShopDbContext _db;

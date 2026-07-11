@@ -33,8 +33,7 @@ namespace ShopInternet.Areas.Admin.Controllers
                     Id = user.Id,
                     UserName = user.UserName ?? "N/A",
                     Email = user.Email ?? "N/A",
-                    Roles = await _userManager.GetRolesAsync(user),
-                    IsBlocked = await _userManager.IsLockedOutAsync(user)
+                    Roles = await _userManager.GetRolesAsync(user)
                 });
             }
 
@@ -114,32 +113,6 @@ namespace ShopInternet.Areas.Admin.Controllers
             }
 
             return View(model);
-        }
-
-        // Блокування / розблокування користувача (через вбудований механізм Lockout)
-        [HttpPost]
-        public async Task<IActionResult> ToggleBlock(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null) return NotFound();
-
-            var isBlocked = await _userManager.IsLockedOutAsync(user);
-            if (isBlocked)
-            {
-                // Розблокувати
-                await _userManager.SetLockoutEndDateAsync(user, null);
-            }
-            else
-            {
-                // Заблокувати назавжди
-                if (!user.LockoutEnabled)
-                {
-                    await _userManager.SetLockoutEnabledAsync(user, true);
-                }
-                await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
-            }
-
-            return RedirectToAction(nameof(Index));
         }
 
         // Призначення ролі на основі claim та збереження в БД
